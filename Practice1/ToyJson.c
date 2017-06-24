@@ -15,19 +15,17 @@ static int toyParseNull(toyContext *c, toyValue *v);
 static int toyParseTrue(toyContext *c, toyValue *v);
 static int toyParseFalse(toyContext *c, toyValue *v);
 
-
 int toyParse(toyValue *v, const char *json) {
-	toyContext *c;
+	toyContext c;
 	assert(v != NULL);
-	c->json = json;
+	c.json = json;
 	v->type = TOY_NULL;
-	toyParseWhitespace(c);
-	return toyParseValue(c, v);
+	toyParseWhitespace(&c);
+	return toyParseValue(&c, v);
 }
 
-
 static void toyParseWhitespace(toyContext *c) {
-	char *p = c;
+	char *p = c->json;
 	while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')
 		p++;
 	c->json = p;
@@ -63,7 +61,6 @@ static int toyParseTrue(toyContext *c, toyValue *v) {
 	return TOY_PARSE_OK;
 }
 
-
 static int toyParseFalse(toyContext *c, toyValue *v) {
 	EXPECT(c, 'f');
 	if (c->json[0] != 'a' || c->json[1] != 'l' || c->json[2] != 's' || c->json[3] != 'e') {
@@ -73,6 +70,8 @@ static int toyParseFalse(toyContext *c, toyValue *v) {
 	v->type = TOY_FALSE;
 	return TOY_PARSE_OK;
 }
+
+
 
 
 
